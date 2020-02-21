@@ -1,0 +1,84 @@
+<div *ngIf="loading" class="row">
+    <div class="col-sm-12">
+        <div class="alert-warning text-center">
+            <strong>Loading</strong>
+            <br>
+            <i class="fa fa-refresh fa-spin fa-2x"></i>
+            <br>
+            <span>Wait please</span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!loading">
+    <h1>Tasks</h1>
+    <hr>
+    <button (click)="addTask()" type="button" class="btn btn-danger my-3" data-toggle="modal" data-target="#task" data-whatever="@mdo"><i class="fas fa-plus-square"></i> Add Task</button>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Description</th>
+                <th scope="col">State</th>
+                <th scope="col">User</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let task of tasks">
+                <th scope="row"> {{ task.id }} </th>
+                <td> {{ task.description }} </td>
+                <td *ngIf="task.state"> <span class="badge badge-success">Done</span> </td>
+                <td *ngIf="!task.state"> <span class="badge badge-warning">To do</span> </td>
+                <td> {{ task.user }} </td>
+                <td>
+                    <button (click)="editTask(task)" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
+<div *ngIf="!loading && tasks.length<1" class="row">
+    <div class="col-sm-12">
+        <div class="alert-info text-center">
+            <strong>No data</strong>
+            <br>
+            <i class="fa fa-info fa-2x"></i>
+            <br>
+            <span>to show</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="task" tabindex="-1" role="dialog" aria-labelledby="taskLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="taskLabel">{{ title }} Task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form #f="ngForm" (ngSubmit)="saveTask(f)">
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="task-description" class="col-form-label">Description:</label>
+            <input id="description" type="text" class="form-control" [(ngModel)]="description" name="description" required>
+            <input *ngIf="action=='edit'" id="id" type="hidden" class="form-control" [(ngModel)]="id" name="id">
+            <input *ngIf="action=='add'" id="user_id" type="hidden" class="form-control" [ngModel]="user_id" name="user_id">
+          </div>
+          <div *ngIf="action=='edit'" class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="state" [(ngModel)]="state" name="state">
+            <label class="form-check-label" for="state">Done</label>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close(f)">Close</button>
+        <button [disabled]="f.invalid" type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
